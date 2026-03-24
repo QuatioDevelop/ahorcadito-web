@@ -31,7 +31,17 @@ export async function obtenerRanking() {
 
 /**
  * Guarda una entrada en el ranking.
- * @param {{ nombre: string, cedula: string, puntaje: number, tiempo: number }} entry
+ * Campos según ahorcadito.config.json > entryFields:
+ * @param {{
+ *   nombre: string,
+ *   cedula: string,
+ *   correo: string,
+ *   puntaje: number,
+ *   "preguntas-completadas": number,
+ *   "vidas-restantes": number,
+ *   "tiempo-total": number,
+ *   resultados: number
+ * }} entry
  * @returns {Promise<void>}
  */
 export async function guardarPuntaje(entry) {

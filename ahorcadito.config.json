@@ -1,0 +1,80 @@
+{
+  "name": "Ahorcadito web",
+  "description": "",
+  "type": "quiz",
+  "config": {
+    "userFields": [
+      {
+        "name": "nombre",
+        "label": "nombre",
+        "type": "text",
+        "required": true
+      },
+      {
+        "name": "cedula",
+        "label": "cedula",
+        "type": "cedula",
+        "required": true
+      },
+      {
+        "name": "correo",
+        "label": "correo",
+        "type": "email",
+        "required": true
+      }
+    ],
+    "fileUploads": {
+      "allowedTypes": [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "application/pdf"
+      ],
+      "enabled": false,
+      "maxFileSize": 10485760
+    },
+    "authConfig": {
+      "type": "email",
+      "requireVerification": false,
+      "allowAnonymous": false
+    },
+    "entryFields": [
+      {
+        "name": "puntaje",
+        "label": "puntaje",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "preguntas-completadas",
+        "label": "preguntas completadas",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "vidas-restantes",
+        "label": "Vidas Restantes",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "tiempo-total",
+        "label": "Tiempo Total de Juego",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "resultados",
+        "label": "Resultados por Pregunta",
+        "type": "number",
+        "required": false
+      }
+    ],
+    "rulesConfig": {
+      "uniqueFields": [],
+      "maxEntriesPerUser": 0,
+      "requireUniqueParticipant": false,
+      "maxEntriesPerDay": 0
+    }
+  }
+}

@@ -42,18 +42,35 @@ export default function Game() {
   const letrasAdivinadas = letrasUsadas.filter(l => palabra.includes(l))
   const todasAdivinadas = palabra.split('').every(l => l === ' ' || letrasAdivinadas.includes(l))
 
+  function finalizarJuego(gano, erroresFinales, tiempoFinal) {
+    const letrasCorrectas = palabra.replace(/ /g, '').length
+    const pts = gano ? calcularPuntaje(tiempoFinal, erroresFinales, letrasCorrectas) : 0
+    if (gano) addScore(pts)
+    if (player) {
+      guardarPuntaje({
+        nombre: player.nombre,
+        cedula: player.cedula,
+        correo: player.correo ?? '',
+        puntaje: pts,
+        'preguntas-completadas': gano ? 1 : 0,
+        'vidas-restantes': MAX_ERRORES - erroresFinales,
+        'tiempo-total': tiempoFinal,
+        resultados: letrasCorrectas - (palabra.split('').filter(l => l !== ' ' && !letrasUsadas.includes(l)).length),
+      })
+    }
+  }
+
   useEffect(() => {
     if (todasAdivinadas && estado === 'jugando') {
       setEstado('ganado')
-      const pts = calcularPuntaje(tiempo, errores, palabra.replace(/ /g, '').length)
-      addScore(pts)
-      if (player) guardarPuntaje({ nombre: player.nombre, cedula: player.cedula, puntaje: pts, tiempo })
+      finalizarJuego(true, errores, tiempo)
     }
   }, [todasAdivinadas, estado])
 
   useEffect(() => {
     if (errores >= MAX_ERRORES && estado === 'jugando') {
       setEstado('perdido')
+      finalizarJuego(false, errores, tiempo)
     }
   }, [errores, estado])
 
@@ -75,7 +92,7 @@ export default function Game() {
 
   const puntajeActual = estado === 'ganado'
     ? calcularPuntaje(tiempo, errores, palabra.replace(/ /g, '').length)
-    : null
+    : 0
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -115,7 +132,7 @@ export default function Game() {
               <p className="text-3xl mb-1">🎉</p>
               <p className="text-green-400 font-bold text-xl">¡Adivinaste!</p>
               <p className="text-slate-400 text-sm mt-1">La palabra era: <span className="text-white font-bold">{palabra}</span></p>
-              {puntajeActual !== null && (
+              {puntajeActual > 0 && (
                 <p className="text-indigo-300 font-bold text-lg mt-2">+{puntajeActual} puntos</p>
               )}
             </>
