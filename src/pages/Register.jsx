@@ -15,7 +15,7 @@ export default function Register() {
   function validate() {
     const e = {}
     if (!form.nombre.trim() || form.nombre.trim().length < 2) e.nombre = 'Ingresa tu nombre completo'
-    if (!form.cedula.trim() || !/^\d{5,12}$/.test(form.cedula.trim())) e.cedula = 'Cédula inválida (solo números, 5-12 dígitos)'
+    if (!form.cedula.trim() || !/^\d{5,12}$/.test(form.cedula.trim())) e.cedula = 'Cédula inválida (solo números, 5–12 dígitos)'
     if (!form.correo.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.correo.trim())) e.correo = 'Correo electrónico inválido'
     return e
   }
@@ -43,17 +43,54 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-65px)] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
+    <div
+      className="min-h-[calc(100vh-57px)] flex items-center justify-center px-4 py-12 relative"
+      style={{ background: 'var(--bg-void)' }}
+    >
+      {/* Ambient glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 50% 50% at 50% 45%, rgba(192,138,37,0.04) 0%, transparent 65%)',
+        }}
+      />
+
+      <div className="relative z-10 w-full max-w-md">
+
+        {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white">Registro</h2>
-          <p className="text-slate-400 mt-2">Ingresa los datos del participante</p>
+          <div
+            className="font-display text-xs tracking-[0.3em] uppercase mb-4"
+            style={{ color: 'var(--gold-dim)' }}
+          >
+            ◆ Participante ◆
+          </div>
+          <h2
+            className="font-display font-bold text-3xl tracking-wide"
+            style={{ color: 'var(--ink)', letterSpacing: '0.1em' }}
+          >
+            REGISTRO
+          </h2>
+          <div className="flex items-center justify-center gap-3 mt-3">
+            <div className="h-px w-12" style={{ background: 'linear-gradient(90deg, transparent, var(--gold-dim))' }} />
+            <span style={{ color: 'var(--gold)', fontSize: '0.6rem' }}>✦</span>
+            <div className="h-px w-12" style={{ background: 'linear-gradient(90deg, var(--gold-dim), transparent)' }} />
+          </div>
+          <p className="font-body text-base mt-3 italic" style={{ color: 'var(--ink-muted)' }}>
+            Ingresa tus datos para comenzar
+          </p>
         </div>
 
+        {/* Form card */}
         <div className="card">
           <form onSubmit={handleSubmit} noValidate className="space-y-5">
+
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
+              <label
+                className="block font-display text-xs tracking-widest uppercase mb-2"
+                style={{ color: 'var(--ink-dim)', letterSpacing: '0.14em' }}
+              >
                 Nombre completo
               </label>
               <input
@@ -65,11 +102,18 @@ export default function Register() {
                 className="input-field"
                 autoComplete="name"
               />
-              {errors.nombre && <p className="text-red-400 text-xs mt-1">{errors.nombre}</p>}
+              {errors.nombre && (
+                <p className="font-body text-sm mt-1.5" style={{ color: 'var(--crimson-bright)' }}>
+                  {errors.nombre}
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
+              <label
+                className="block font-display text-xs tracking-widest uppercase mb-2"
+                style={{ color: 'var(--ink-dim)', letterSpacing: '0.14em' }}
+              >
                 Cédula
               </label>
               <input
@@ -82,11 +126,18 @@ export default function Register() {
                 inputMode="numeric"
                 maxLength={12}
               />
-              {errors.cedula && <p className="text-red-400 text-xs mt-1">{errors.cedula}</p>}
+              {errors.cedula && (
+                <p className="font-body text-sm mt-1.5" style={{ color: 'var(--crimson-bright)' }}>
+                  {errors.cedula}
+                </p>
+              )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">
+              <label
+                className="block font-display text-xs tracking-widest uppercase mb-2"
+                style={{ color: 'var(--ink-dim)', letterSpacing: '0.14em' }}
+              >
                 Correo electrónico
               </label>
               <input
@@ -98,26 +149,45 @@ export default function Register() {
                 className="input-field"
                 autoComplete="email"
               />
-              {errors.correo && <p className="text-red-400 text-xs mt-1">{errors.correo}</p>}
+              {errors.correo && (
+                <p className="font-body text-sm mt-1.5" style={{ color: 'var(--crimson-bright)' }}>
+                  {errors.correo}
+                </p>
+              )}
             </div>
 
             {errors.general && (
-              <p className="text-red-400 text-sm text-center">{errors.general}</p>
+              <p
+                className="font-body text-sm text-center py-2 px-3 rounded"
+                style={{
+                  color: 'var(--crimson-bright)',
+                  background: 'var(--crimson-glow)',
+                  border: '1px solid rgba(192,57,43,0.25)',
+                }}
+              >
+                {errors.general}
+              </p>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary w-full mt-2"
+              style={{ padding: '0.85rem 2rem' }}
             >
-              {loading ? 'Registrando...' : 'Registrar'}
+              {loading ? 'Registrando...' : 'Comenzar partida'}
             </button>
+
           </form>
         </div>
 
-        <p className="text-center text-slate-500 text-xs mt-6">
+        <p
+          className="text-center font-body text-sm italic mt-5"
+          style={{ color: 'var(--ink-faint)' }}
+        >
           Solo usamos tus datos para el ranking del juego
         </p>
+
       </div>
     </div>
   )

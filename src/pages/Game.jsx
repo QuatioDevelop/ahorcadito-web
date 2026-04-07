@@ -16,6 +16,12 @@ function calcularPuntaje(tiempoSegundos, errores, longPalabra) {
   return Math.max(0, base - penalidad + bonus)
 }
 
+function formatTiempo(s) {
+  const m = Math.floor(s / 60)
+  const ss = s % 60
+  return m > 0 ? `${m}:${String(ss).padStart(2, '0')}` : `${s}s`
+}
+
 export default function Game() {
   const navigate = useNavigate()
   const { player, addScore } = useGame()
@@ -82,77 +88,99 @@ export default function Game() {
     }
   }, [letrasUsadas, palabra, estado])
 
-  function nuevaRonda() {
-    setRonda(getPalabraAleatoria())
-    setLetrasUsadas([])
-    setErrores(0)
-    setEstado('jugando')
-    setTiempo(0)
-  }
-
   const puntajeActual = estado === 'ganado'
     ? calcularPuntaje(tiempo, errores, palabra.replace(/ /g, '').length)
     : 0
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      {/* Header del juego */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <span className="text-xs text-slate-500 uppercase tracking-widest">Categoría</span>
-          <p className="text-indigo-300 font-semibold">{categoria}</p>
+    <div className="game-page">
+
+      {/* ── Header ── */}
+      <div className="game-header">
+        <div className="game-meta-block">
+          <div className="game-meta-label">Categoría</div>
+          <span className="game-category-badge">{categoria}</span>
         </div>
-        <div className="text-right">
-          <span className="text-xs text-slate-500 uppercase tracking-widest">Tiempo</span>
-          <p className="text-slate-300 font-mono font-semibold">{tiempo}s</p>
+        <div className="game-meta-block game-meta-block--right">
+          <div className="game-meta-label">Tiempo</div>
+          <span className="game-timer">{formatTiempo(tiempo)}</span>
         </div>
       </div>
 
-      {/* Ahorcado SVG */}
-      <div className="card mb-6">
+      {/* ── Hangman card ── */}
+      <div className="card game-hangman-card">
         <HangmanSVG errores={errores} />
-        <div className="flex justify-center gap-1 mt-2">
+
+        <div className="game-errors">
           {Array.from({ length: MAX_ERRORES }).map((_, i) => (
-            <div key={i} className={`w-2 h-2 rounded-full transition-colors duration-300 ${i < errores ? 'bg-red-500' : 'bg-slate-700'}`} />
+            <div key={i} className={`error-dot ${i < errores ? 'error-dot--active' : ''}`} />
           ))}
         </div>
-        <p className="text-center text-slate-500 text-sm mt-1">
-          {errores}/{MAX_ERRORES} errores
-        </p>
+
+        <div
+          className="game-error-label"
+          style={{ color: errores >= MAX_ERRORES - 1 ? 'var(--crimson-bright)' : 'var(--ink-muted)' }}
+        >
+          {errores} / {MAX_ERRORES} errores
+        </div>
       </div>
 
-      {/* Palabra */}
+      {/* ── Word ── */}
       <WordDisplay palabra={palabra} letrasAdivinadas={letrasAdivinadas} />
 
-      {/* Estado: ganado o perdido */}
+      {/* ── Result modal ── */}
       {estado !== 'jugando' && (
-        <div className={`card mb-6 text-center border-2 ${estado === 'ganado' ? 'border-green-500/50 bg-green-500/10' : 'border-red-500/50 bg-red-500/10'}`}>
+        <div
+          className="game-result animate-modal"
+          style={{
+            border: `1px solid ${estado === 'ganado' ? 'rgba(45,122,84,0.5)' : 'rgba(192,57,43,0.5)'}`,
+            background: estado === 'ganado' ? 'rgba(14,36,26,0.92)' : 'rgba(36,12,12,0.92)',
+          }}
+        >
           {estado === 'ganado' ? (
             <>
-              <p className="text-3xl mb-1">🎉</p>
-              <p className="text-green-400 font-bold text-xl">¡Adivinaste!</p>
-              <p className="text-slate-400 text-sm mt-1">La palabra era: <span className="text-white font-bold">{palabra}</span></p>
+              <div className="game-result-icon" style={{ color: 'var(--gold-bright)' }}>✦</div>
+              <p className="game-result-title" style={{ color: 'var(--emerald-bright)' }}>
+                ¡ADIVINASTE!
+              </p>
+              <p className="game-result-word">
+                La palabra era:{' '}
+                <span className="game-result-word-value">{palabra}</span>
+              </p>
               {puntajeActual > 0 && (
-                <p className="text-indigo-300 font-bold text-lg mt-2">+{puntajeActual} puntos</p>
+                <p className="game-result-score">+{puntajeActual} puntos</p>
               )}
             </>
           ) : (
             <>
-              <p className="text-3xl mb-1">💀</p>
-              <p className="text-red-400 font-bold text-xl">¡Perdiste!</p>
-              <p className="text-slate-400 text-sm mt-1">La palabra era: <span className="text-white font-bold">{palabra}</span></p>
+              <div className="game-result-icon" style={{ color: 'var(--crimson-bright)' }}>✝</div>
+              <p className="game-result-title" style={{ color: 'var(--crimson-bright)' }}>FIN</p>
+              <p className="game-result-word">
+                La palabra era:{' '}
+                <span className="game-result-word-value">{palabra}</span>
+              </p>
             </>
           )}
-          <div className="flex gap-3 justify-center mt-4">
-            <button onClick={() => navigate('/ranking')} className="btn-primary">
-              Ver ranking
-            </button>
-          </div>
+
+          <button
+            onClick={() => navigate('/ranking')}
+            className="btn-primary game-result-btn"
+          >
+            Ver ranking
+          </button>
         </div>
       )}
 
-      {/* Teclado */}
-      <Keyboard letrasUsadas={letrasUsadas} onLetra={handleLetra} disabled={estado !== 'jugando'} />
+      {/* ── Keyboard ── */}
+      <div className="game-keyboard-section">
+        <div className="ornament-divider game-keyboard-divider">letras</div>
+        <Keyboard
+          letrasUsadas={letrasUsadas}
+          onLetra={handleLetra}
+          disabled={estado !== 'jugando'}
+        />
+      </div>
+
     </div>
   )
 }

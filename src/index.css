@@ -2,23 +2,804 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ──────────────────────────────────────────
+   Design Tokens
+────────────────────────────────────────── */
+:root {
+  --bg-void: #080604;
+  --bg-deep: #0f0c09;
+  --bg-surface: #1a1510;
+  --bg-elevated: #231d16;
+  --bg-card: #1c1710;
+
+  --gold: #c08a25;
+  --gold-dim: #7a5918;
+  --gold-bright: #e5ab40;
+  --gold-glow: rgba(192, 138, 37, 0.14);
+  --gold-border: rgba(192, 138, 37, 0.22);
+
+  --crimson: #8b1a1a;
+  --crimson-bright: #c0392b;
+  --crimson-glow: rgba(192, 57, 43, 0.18);
+
+  --emerald: #1e4a35;
+  --emerald-bright: #2d7a54;
+  --emerald-glow: rgba(45, 122, 84, 0.15);
+
+  --ink: #ede0c8;
+  --ink-dim: #b0a090;
+  --ink-muted: #6e6050;
+  --ink-faint: #3a3028;
+
+  --rope: #6b4c1e;
+  --border: var(--gold-border);
+  --border-subtle: rgba(192, 138, 37, 0.08);
+
+  --font-display: 'Cinzel', 'Georgia', serif;
+  --font-body: 'EB Garamond', 'Georgia', serif;
+  --font-stamp: 'Special Elite', 'Courier New', monospace;
+
+  --shadow-card: 0 12px 48px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--border);
+  --shadow-btn: 0 4px 20px rgba(192, 138, 37, 0.28);
+  --radius-card: 3px;
+}
+
+/* ──────────────────────────────────────────
+   Base
+────────────────────────────────────────── */
 @layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
   body {
-    @apply bg-slate-900 text-slate-100 min-h-screen;
+    background-color: var(--bg-void);
+    color: var(--ink);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Film grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.032;
+    pointer-events: none;
+    z-index: 9998;
   }
 }
 
+/* ──────────────────────────────────────────
+   Component Classes
+────────────────────────────────────────── */
 @layer components {
+
+  /* ── Buttons ── */
   .btn-primary {
-    @apply bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #d4991a 0%, #9a6a14 100%);
+    color: #1a1208;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    border: 1px solid rgba(229, 171, 64, 0.5);
+    border-radius: var(--radius-card);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-btn), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
   }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(255,255,255,0.1) 0%, transparent 55%);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover::after { opacity: 1; }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(192, 138, 37, 0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active { transform: translateY(0); box-shadow: 0 2px 10px rgba(192, 138, 37, 0.2); }
+  .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
   .btn-secondary {
-    @apply bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold px-6 py-3 rounded-xl transition-all duration-200;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: var(--ink-muted);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
   }
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: var(--gold-glow);
+    transform: translateY(-1px);
+  }
+  .btn-secondary:active { transform: translateY(0); }
+
+  /* ── Inputs ── */
   .input-field {
-    @apply w-full bg-slate-800 border border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-400 outline-none transition-all duration-200;
+    width: 100%;
+    background: var(--bg-deep);
+    border: 1px solid var(--ink-faint);
+    border-radius: var(--radius-card);
+    padding: 0.8rem 1rem;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    outline: none;
+    transition: all 0.2s ease;
   }
+  .input-field::placeholder { color: var(--ink-muted); font-style: italic; }
+  .input-field:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-glow), inset 0 1px 4px rgba(0,0,0,0.4);
+  }
+
+  /* ── Cards ── */
   .card {
-    @apply bg-slate-800/60 backdrop-blur border border-slate-700/50 rounded-2xl p-6 shadow-xl;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    position: relative;
   }
+
+  /* Corner ornaments */
+  .card::before,
+  .card::after {
+    content: '✦';
+    position: absolute;
+    color: var(--gold-dim);
+    font-size: 0.55rem;
+    opacity: 0.5;
+    line-height: 1;
+  }
+  .card::before { top: 7px; left: 9px; }
+  .card::after  { bottom: 7px; right: 9px; }
+
+  /* ── Keyboard Keys ── */
+  .key-btn {
+    width: 36px;
+    height: 38px;
+    font-family: var(--font-stamp);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    border-radius: 3px;
+    transition: all 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .key-btn--active {
+    background: linear-gradient(180deg, #252018 0%, #1a1510 100%);
+    border: 1px solid rgba(192, 138, 37, 0.28);
+    color: var(--ink);
+    box-shadow: 0 3px 0 0 rgba(107, 76, 30, 0.65), 0 4px 10px rgba(0,0,0,0.55);
+    cursor: pointer;
+  }
+  .key-btn--active:hover {
+    border-color: var(--gold);
+    color: var(--gold-bright);
+    box-shadow: 0 3px 0 0 rgba(192,138,37,0.55), 0 4px 14px rgba(192,138,37,0.18);
+    transform: translateY(-1px);
+  }
+  .key-btn--active:active {
+    transform: translateY(3px);
+    box-shadow: 0 0 0 0 transparent, 0 1px 4px rgba(0,0,0,0.4);
+  }
+
+  .key-btn--used {
+    background: rgba(20,16,10,0.6);
+    border: 1px solid rgba(58, 48, 40, 0.3);
+    color: rgba(110, 96, 80, 0.28);
+    cursor: not-allowed;
+    transform: translateY(2px);
+  }
+
+  .key-btn--disabled {
+    background: linear-gradient(180deg, #252018 0%, #1a1510 100%);
+    border: 1px solid rgba(192, 138, 37, 0.14);
+    color: rgba(237, 224, 200, 0.35);
+    box-shadow: 0 3px 0 0 rgba(107, 76, 30, 0.35), 0 4px 8px rgba(0,0,0,0.4);
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  /* ── Word Letter Tiles ── */
+  .word-letter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 28px;
+  }
+
+  .word-letter__char {
+    font-family: var(--font-display);
+    font-size: 1.65rem;
+    font-weight: 700;
+    min-width: 28px;
+    text-align: center;
+    color: transparent;
+    display: block;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    min-height: 2rem;
+  }
+
+  .word-letter__char--revealed {
+    color: var(--gold-bright);
+    animation: letter-reveal 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .word-letter__line {
+    height: 2px;
+    width: 100%;
+    min-width: 24px;
+    background: var(--ink-faint);
+    border-radius: 1px;
+    transition: background 0.4s ease;
+  }
+
+  .word-letter__line--revealed {
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  /* ── Error Dots ── */
+  .error-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(139, 26, 26, 0.3);
+    background: transparent;
+    transition: all 0.35s ease;
+  }
+
+  .error-dot--active {
+    background: var(--crimson-bright);
+    border-color: var(--crimson-bright);
+    box-shadow: 0 0 10px rgba(192, 57, 43, 0.65);
+  }
+
+  /* ── Ornamental divider ── */
+  .ornament-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--ink-muted);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: var(--font-display);
+  }
+  .ornament-divider::before,
+  .ornament-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+}
+
+/* ──────────────────────────────────────────
+   Animations
+────────────────────────────────────────── */
+@keyframes letter-reveal {
+  0%   { opacity: 0; transform: scale(0.4) rotateX(90deg); }
+  60%  { opacity: 1; transform: scale(1.12) rotateX(-6deg); }
+  100% { opacity: 1; transform: scale(1) rotateX(0deg); }
+}
+
+@keyframes float-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modal-enter {
+  from { opacity: 0; transform: scale(0.88) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  91%  { opacity: 1; }
+  92%  { opacity: 0.8; }
+  93%  { opacity: 1; }
+  95%  { opacity: 0.88; }
+  96%  { opacity: 1; }
+}
+
+@keyframes draw-stroke {
+  from { stroke-dashoffset: 400; opacity: 0; }
+  to   { stroke-dashoffset: 0;   opacity: 1; }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 12px var(--gold-glow); }
+  50%       { box-shadow: 0 0 28px rgba(192, 138, 37, 0.38); }
+}
+
+@keyframes title-glow {
+  0%, 100% { text-shadow: 0 0 30px rgba(192,138,37,0.15), 0 2px 4px rgba(0,0,0,0.8); }
+  50%       { text-shadow: 0 0 50px rgba(192,138,37,0.28), 0 2px 4px rgba(0,0,0,0.8); }
+}
+
+/* ──────────────────────────────────────────
+   Utility helpers
+────────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
+.font-body    { font-family: var(--font-body); }
+.font-stamp   { font-family: var(--font-stamp); }
+
+.text-gold        { color: var(--gold); }
+.text-gold-bright { color: var(--gold-bright); }
+.text-gold-dim    { color: var(--gold-dim); }
+.text-ink         { color: var(--ink); }
+.text-ink-dim     { color: var(--ink-dim); }
+.text-ink-muted   { color: var(--ink-muted); }
+.text-crimson     { color: var(--crimson-bright); }
+.text-emerald     { color: var(--emerald-bright); }
+
+.animate-flicker    { animation: flicker 6s infinite; }
+.animate-float-up   { animation: float-up 0.65s ease forwards; }
+.animate-modal      { animation: modal-enter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.animate-title-glow { animation: title-glow 4s ease-in-out infinite; }
+
+/* ──────────────────────────────────────────
+   Home Page
+────────────────────────────────────────── */
+.home-page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-void);
+  text-align: center;
+}
+
+.home-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 65% 55% at 50% 48%, rgba(192,138,37,0.055) 0%, transparent 70%);
+}
+
+.home-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 38%, rgba(4,3,2,0.78) 100%);
+}
+
+.home-bg-gallows {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.055;
+}
+
+.home-content {
+  position: relative;
+  z-index: 10;
+  /* No max-width here — the nowrap title needs room to breathe */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-overline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+
+.home-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: 0.07em;
+  /* Compensate trailing letter-spacing so visual center = true center */
+  padding-left: 0.07em;
+  text-align: center;
+  /* Never let the word wrap — AHORCADITO must stay on one line */
+  white-space: nowrap;
+  /* Scale down as needed so the word always fits the viewport */
+  font-size: clamp(1.8rem, 9vw, 7rem);
+}
+
+.home-title-accent { color: var(--gold); }
+
+.home-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.25rem 0;
+  width: 100%;
+}
+
+.home-divider-line {
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim));
+}
+
+.home-divider-line:last-child {
+  background: linear-gradient(90deg, var(--gold-dim), transparent);
+}
+
+.home-divider-star {
+  color: var(--gold);
+  font-size: 0.75rem;
+}
+
+.home-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--ink-dim);
+  margin-bottom: 0.4rem;
+}
+
+.home-desc {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--ink-muted);
+  margin-bottom: 2.5rem;
+}
+
+.home-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  align-items: center;
+  width: 100%;
+  max-width: 320px;
+}
+
+.home-btn-play,
+.home-btn-rank {
+  width: 100%;
+  padding: 0.95rem 2rem;
+  font-size: 0.85rem;
+}
+
+.home-footer {
+  position: absolute;
+  bottom: 1.5rem;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ──────────────────────────────────────────
+   Game Page
+────────────────────────────────────────── */
+.game-page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  min-height: calc(100svh - 57px);
+}
+
+.game-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.game-meta-block { display: flex; flex-direction: column; gap: 0.3rem; }
+.game-meta-block--right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  min-width: 70px;
+}
+
+.game-meta-label {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+.game-category-badge {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(192,138,37,0.08);
+  border: 1px solid rgba(192,138,37,0.22);
+  padding: 0.2rem 0.65rem;
+  border-radius: 2px;
+}
+
+.game-timer {
+  font-family: var(--font-stamp);
+  font-size: 1.4rem;
+  color: var(--ink);
+  white-space: nowrap;
+  display: block;
+  text-align: right;
+}
+
+.game-hangman-card {
+  margin-bottom: 0.5rem;
+}
+
+.game-errors {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.game-error-label {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+
+.game-result {
+  border-radius: 3px;
+  padding: 1.5rem;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.game-result::before,
+.game-result::after { display: none; }
+
+.game-result-icon {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.game-result-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: 0.14em;
+  margin-bottom: 0.5rem;
+}
+
+.game-result-word {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--ink-muted);
+  margin-bottom: 0.25rem;
+}
+
+.game-result-word-value {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+
+.game-result-score {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.6rem;
+  letter-spacing: 0.08em;
+  color: var(--gold-bright);
+  margin: 0.5rem 0 0;
+}
+
+.game-result-btn {
+  margin-top: 1.25rem;
+  width: 100%;
+  max-width: 240px;
+  padding: 0.9rem 2rem;
+}
+
+.game-keyboard-section {
+  margin-top: 1.25rem;
+}
+
+.game-keyboard-divider {
+  margin-bottom: 1rem;
+  font-size: 0.65rem;
+  color: var(--ink-faint);
+}
+
+/* ──────────────────────────────────────────
+   Responsive — Desktop (≥768px)
+────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .home-ctas {
+    flex-direction: row;
+    max-width: 440px;
+  }
+
+  .home-btn-play,
+  .home-btn-rank {
+    width: auto;
+    flex: 1;
+  }
+
+  .game-page {
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .game-hangman-card {
+    padding: 2rem;
+  }
+
+  .word-letter__char {
+    font-size: 2rem;
+    min-width: 32px;
+  }
+}
+
+/* ──────────────────────────────────────────
+   Kiosk / Stand — Portrait 1080×1920
+   Target: tall portrait touchscreen
+────────────────────────────────────────── */
+@media (min-width: 900px) and (min-height: 1500px) {
+
+  /* Home */
+  .home-title {
+    font-size: clamp(4rem, 8vw, 9rem);
+    letter-spacing: 0.1em;
+    padding-left: 0.1em;
+  }
+
+  .home-subtitle { font-size: 1.8rem; }
+  .home-desc     { font-size: 1.3rem; margin-bottom: 3.5rem; }
+  .home-overline { font-size: 0.85rem; letter-spacing: 0.4em; margin-bottom: 3rem; }
+
+  .home-ctas {
+    flex-direction: column;
+    max-width: 460px;
+    gap: 1.25rem;
+  }
+
+  .home-btn-play,
+  .home-btn-rank {
+    width: 100%;
+    padding: 1.4rem 3rem;
+    font-size: 1.1rem;
+  }
+
+  /* Navbar */
+  nav .font-display { font-size: 1.2rem !important; }
+  nav .font-body    { font-size: 1rem !important; }
+
+  /* Game layout */
+  .game-page {
+    max-width: 860px;
+    padding: 2.5rem 2rem 4rem;
+  }
+
+  .game-meta-label  { font-size: 0.8rem; }
+  .game-category-badge { font-size: 1rem; padding: 0.35rem 1rem; }
+  .game-timer       { font-size: 1.8rem; }
+  .game-error-label { font-size: 0.8rem; }
+
+  .game-hangman-card {
+    padding: 2.5rem 3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Bigger hangman image */
+  .hangman-img,
+  .game-hangman-card img {
+    max-width: 480px !important;
+  }
+
+  /* Error dots bigger */
+  .error-dot {
+    width: 16px;
+    height: 16px;
+  }
+  .game-errors { gap: 0.75rem; margin-top: 1.25rem; }
+
+  /* Word letters bigger */
+  .word-letter__char {
+    font-size: 2.6rem;
+    min-width: 40px;
+  }
+  .word-letter__line {
+    min-width: 36px;
+    height: 3px;
+  }
+  .word-letter { gap: 6px; min-width: 40px; }
+
+  /* Keyboard keys bigger for touch */
+  .key-btn {
+    width: 58px !important;
+    height: 62px !important;
+    font-size: 1.2rem !important;
+    border-radius: 5px !important;
+  }
+
+  /* Gap between keys */
+  .game-keyboard-section > div:last-child {
+    gap: 10px !important;
+    max-width: 640px !important;
+  }
+
+  /* Result modal */
+  .game-result {
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+  }
+  .game-result-title { font-size: 2rem; }
+  .game-result-word  { font-size: 1.4rem; }
+  .game-result-score { font-size: 2.5rem; }
+  .game-result-btn   { max-width: 360px; padding: 1.2rem 2.5rem; font-size: 1rem; }
+
+  /* Form pages bigger */
+  .card { padding: 2.5rem; }
+  .input-field { font-size: 1.2rem; padding: 1rem 1.2rem; }
+  .btn-primary, .btn-secondary { font-size: 1rem; padding: 1rem 2.5rem; }
+  label.font-display { font-size: 0.85rem !important; }
+
+  /* Ranking */
+  .font-body { font-size: 1.1rem; }
 }

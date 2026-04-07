@@ -1,50 +1,86 @@
 import { useNavigate } from 'react-router-dom'
 
+function BgGallows() {
+  return (
+    <svg
+      viewBox="0 0 260 320"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      style={{ width: '100%', height: '100%', maxWidth: '420px' }}
+    >
+      <line x1="18" y1="305" x2="242" y2="305" stroke="#c08a25" strokeWidth="6" strokeLinecap="round" />
+      <line x1="68" y1="305" x2="68" y2="20"  stroke="#c08a25" strokeWidth="7" strokeLinecap="round" />
+      <line x1="68" y1="20"  x2="180" y2="20"  stroke="#c08a25" strokeWidth="6" strokeLinecap="round" />
+      <line x1="68" y1="78"  x2="115" y2="20"  stroke="#c08a25" strokeWidth="5" strokeLinecap="round" />
+      <path d="M180,20 C184,40 180,52 180,66" stroke="#c08a25" strokeWidth="3.5" strokeLinecap="round" />
+      <ellipse cx="180" cy="72" rx="9" ry="7" stroke="#c08a25" strokeWidth="3" />
+      <circle cx="180" cy="95" r="22" stroke="#c08a25" strokeWidth="3.5" />
+      <line x1="180" y1="117" x2="180" y2="188" stroke="#c08a25" strokeWidth="4" strokeLinecap="round" />
+      <path d="M180,140 Q156,160 134,174" stroke="#c08a25" strokeWidth="3.5" strokeLinecap="round" />
+      <path d="M180,140 Q204,160 226,174" stroke="#c08a25" strokeWidth="3.5" strokeLinecap="round" />
+      <path d="M180,188 Q156,214 134,244" stroke="#c08a25" strokeWidth="3.5" strokeLinecap="round" />
+      <path d="M180,188 Q204,214 226,244" stroke="#c08a25" strokeWidth="3.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export default function Home() {
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
-      {/* Background decorativo */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-900" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="home-page">
+      {/* Radial amber glow */}
+      <div className="home-glow" />
 
-      <div className="relative z-10 text-center max-w-lg">
-        {/* Logo / Marca */}
-        <div className="mb-6">
-          <span className="text-8xl select-none" role="img" aria-label="Ahorcadito">🪢</span>
+      {/* Vignette */}
+      <div className="home-vignette" />
+
+      {/* Background gallows silhouette */}
+      <div className="home-bg-gallows">
+        <BgGallows />
+      </div>
+
+      {/* Main content */}
+      <div className="home-content">
+
+        {/* Overline */}
+        <div className="home-overline">
+          <span>◆</span>
+          <span>Quatio</span>
+          <span>◆</span>
         </div>
 
-        <h1 className="text-6xl font-extrabold tracking-tight mb-3">
-          <span className="text-white">Ahorco</span>
-          <span className="text-indigo-400">dito</span>
+        {/* Title */}
+        <h1 className="home-title animate-title-glow">
+          AHORCO<span className="home-title-accent">DITO</span>
         </h1>
 
-        <p className="text-slate-400 text-lg mb-2">
-          El juego del ahorcado, ahora en tu navegador
-        </p>
-        <p className="text-slate-500 text-sm mb-10">
-          Adivina la palabra antes de que sea demasiado tarde 💀
-        </p>
+        {/* Ornamental divider */}
+        <div className="home-divider">
+          <div className="home-divider-line" />
+          <span className="home-divider-star">✦</span>
+          <div className="home-divider-line" />
+        </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button
-            onClick={() => navigate('/registro')}
-            className="btn-primary text-lg px-10"
-          >
+        {/* Subtitle */}
+        <p className="home-subtitle">El juego del ahorcado</p>
+        <p className="home-desc">Adivina la palabra antes de que sea demasiado tarde</p>
+
+        {/* CTAs */}
+        <div className="home-ctas">
+          <button onClick={() => navigate('/registro')} className="btn-primary home-btn-play">
             Jugar ahora
           </button>
-          <button
-            onClick={() => navigate('/ranking')}
-            className="btn-secondary"
-          >
+          <button onClick={() => navigate('/ranking')} className="btn-secondary home-btn-rank">
             Ver ranking
           </button>
         </div>
+
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-6 text-slate-600 text-xs">
+      <div className="home-footer">
         Ahorcadito &copy; {new Date().getFullYear()}
       </div>
     </div>

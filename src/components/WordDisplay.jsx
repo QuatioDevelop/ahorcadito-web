@@ -1,20 +1,20 @@
 export default function WordDisplay({ palabra, letrasAdivinadas }) {
   return (
-    <div className="flex flex-wrap justify-center gap-2 my-6" aria-label="Palabra a adivinar">
+    <div
+      className="flex flex-wrap justify-center gap-x-2 gap-y-3 my-6"
+      aria-label="Palabra a adivinar"
+    >
       {palabra.split('').map((letra, i) => {
-        const revealed = letrasAdivinadas.includes(letra) || letra === ' '
+        if (letra === ' ') {
+          return <div key={i} className="w-4" />
+        }
+        const revealed = letrasAdivinadas.includes(letra)
         return (
-          <div key={i} className="flex flex-col items-center">
-            <span className={`text-2xl font-bold w-8 text-center transition-all duration-300 ${
-              letra === ' ' ? 'text-transparent' : revealed ? 'text-indigo-300' : 'text-transparent'
-            }`}>
-              {revealed ? letra : '_'}
+          <div key={i} className="word-letter">
+            <span className={`word-letter__char ${revealed ? 'word-letter__char--revealed' : ''}`}>
+              {revealed ? letra : ''}
             </span>
-            {letra !== ' ' && (
-              <div className={`h-0.5 w-8 mt-1 rounded transition-colors duration-300 ${
-                revealed ? 'bg-indigo-400' : 'bg-slate-600'
-              }`} />
-            )}
+            <div className={`word-letter__line ${revealed ? 'word-letter__line--revealed' : ''}`} />
           </div>
         )
       })}
